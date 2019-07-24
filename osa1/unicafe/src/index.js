@@ -8,6 +8,32 @@ const Button = (props) => {
     )
 }
 
+const Statistics = (props) => {
+    const { good, neutral, bad, history, average } = props
+
+    if (history.length > 0) {
+        return (
+            <div> 
+                <p>good {good}</p>
+                <p>neutral {neutral}</p>
+                <p>bad {bad}</p>
+                <p>all {history.length}</p>
+                <p>average {average / history.length}</p>
+                <p>positive {good / history.length * 100} %</p>
+            </div>
+        )
+    }
+
+    else {
+        return (
+            <div>
+                <p>No feedback given</p>
+            </div>
+        )
+    }
+
+}
+
 const App = () => {
     // tallenna napit omaan tilaansa
     const [good, setGood] = useState(0)
@@ -42,12 +68,7 @@ const App = () => {
             <Button handleClick={handleNeutralClick} text='neutral' />
             <Button handleClick={handleBadClick} text='bad' />
             <h1>Statistics</h1>
-            <p>good {good}</p>
-            <p>neutral {neutral}</p>
-            <p>bad {bad}</p>
-            <p>all {history.length}</p>
-            <p>average {average / history.length}</p>
-            <p>positive {good / history.length * 100} %</p>
+            <Statistics good={good} neutral={neutral} bad={bad} history={history} average={average} />
         </div>
     )
 }
