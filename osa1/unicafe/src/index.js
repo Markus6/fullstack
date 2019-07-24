@@ -13,18 +13,27 @@ const App = () => {
     const [good, setGood] = useState(0)
     const [neutral, setNeutral] = useState(0)
     const [bad, setBad] = useState(0)
+    const [history, setHistory] = useState([])
 
     const handleGoodClick = () => {
         setGood(good + 1)
+        setHistory(history.concat(1))
     }
 
     const handleNeutralClick = () => {
         setNeutral(neutral + 1)
+        setHistory(history.concat(0))
     }
 
     const handleBadClick = () => {
         setBad(bad + 1)
+        setHistory(history.concat(-1))
     }
+
+    let average = 0
+    history.forEach(item => {
+        average = average + item
+    })
 
     return (
         <div>
@@ -36,6 +45,9 @@ const App = () => {
             <p>good {good}</p>
             <p>neutral {neutral}</p>
             <p>bad {bad}</p>
+            <p>all {history.length}</p>
+            <p>average {average / history.length}</p>
+            <p>positive {good / history.length * 100} %</p>
         </div>
     )
 }
