@@ -11,9 +11,10 @@ const Button = (props) => {
 const Statistics = (props) => {
     const { text, value } = props
     return (
-        <div> 
-            <p>{text} {value}</p>
-        </div>
+        <tr>
+            <td>{text}</td>
+            <td>{value}</td>
+        </tr>
     )
 }
 
@@ -65,12 +66,17 @@ const App = () => {
                 <Button handleClick={handleNeutralClick} text='neutral' />
                 <Button handleClick={handleBadClick} text='bad' />
                 <h1>Statistics</h1>
-                <Statistics text='good' value={good} />
-                <Statistics text='neutral' value={neutral} />
-                <Statistics text='bad' value={bad} />
-                <Statistics text='all' value={history.length} />
-                <Statistics text='average' value={average / history.length} />
-                <Statistics text='positive' value={good / history.length * 100 + ' %'} />
+                <table>
+                    <tbody>
+                        <Statistics text='good' value={good} />
+                        <Statistics text='neutral' value={neutral} />
+                        <Statistics text='bad' value={bad} />
+                        <Statistics text='all' value={history.length} />
+                        <Statistics text='average' value={average / history.length} />
+                        <Statistics text='positive' value={good / history.length * 100 + ' %'} />        
+                    </tbody>
+                </table>
+                
             </div>
         )
     }
