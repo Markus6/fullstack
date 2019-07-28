@@ -30,11 +30,13 @@ const Content  = (props) => {
 
 const Total = (props) => {
     const parts = props.course.parts;
-    let total = 0;
-    parts.forEach(part => total += part.exercises)
+    const total = parts.reduce( (total, part) => { 
+        return total  + part.exercises ;
+    }, 0);
+
     return (
         <>
-            <p>Number of exercises {total}</p>
+            <p>tota of {total} exercises</p>
         </>
     )
 }
@@ -71,7 +73,7 @@ const Course = (props) => {
         },
         {
           name: 'Redux',
-          exercises: 5,
+          exercises: 10,
           id: 4
         }
       ]
