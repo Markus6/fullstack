@@ -9,30 +9,14 @@ const Button = (props) => {
 }
 
 const Statistics = (props) => {
-    const { good, neutral, bad, history, average } = props
-
-    if (history.length > 0) {
-        return (
-            <div> 
-                <p>good {good}</p>
-                <p>neutral {neutral}</p>
-                <p>bad {bad}</p>
-                <p>all {history.length}</p>
-                <p>average {average / history.length}</p>
-                <p>positive {good / history.length * 100} %</p>
-            </div>
-        )
-    }
-
-    else {
-        return (
-            <div>
-                <p>No feedback given</p>
-            </div>
-        )
-    }
-
+    const { text, value } = props
+    return (
+        <div> 
+            <p>{text} {value}</p>
+        </div>
+    )
 }
+
 
 const App = () => {
     // tallenna napit omaan tilaansa
@@ -61,16 +45,36 @@ const App = () => {
         average = average + item
     })
 
-    return (
-        <div>
-            <h1>Give feedback</h1>
-            <Button handleClick={handleGoodClick} text='good' />
-            <Button handleClick={handleNeutralClick} text='neutral' />
-            <Button handleClick={handleBadClick} text='bad' />
-            <h1>Statistics</h1>
-            <Statistics good={good} neutral={neutral} bad={bad} history={history} average={average} />
-        </div>
-    )
+    if (history.length < 1) {
+        return (
+            <div>
+                <h1>Give feedback</h1>
+                <Button handleClick={handleGoodClick} text='good' />
+                <Button handleClick={handleNeutralClick} text='neutral' />
+                <Button handleClick={handleBadClick} text='bad' />
+                <h1>Statistics</h1>
+                <p>No feedback given</p>
+            </div>
+        )
+    }
+    else {
+        return (
+            <div>
+                <h1>Give feedback</h1>
+                <Button handleClick={handleGoodClick} text='good' />
+                <Button handleClick={handleNeutralClick} text='neutral' />
+                <Button handleClick={handleBadClick} text='bad' />
+                <h1>Statistics</h1>
+                <Statistics text='good' value={good} />
+                <Statistics text='neutral' value={neutral} />
+                <Statistics text='bad' value={bad} />
+                <Statistics text='all' value={history.length} />
+                <Statistics text='average' value={average / history.length} />
+                <Statistics text='positive' value={good / history.length * 100 + ' %'} />
+            </div>
+        )
+    }
+    
 }
 
 ReactDOM.render(<App />, 
