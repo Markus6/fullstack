@@ -8,6 +8,30 @@ const Button = (props) => {
     )
 }
 
+const HasVotes = (props) => {
+    const { index, points } = props
+    return (
+        <div>
+            <p>has {points[index]} votes</p>
+        </div>
+    )
+}
+
+const VotedAnecdote = (props) => {
+    
+    const { points } = props;
+    const maxVotes = Math.max(...points)
+    const voteIndex = points.indexOf(maxVotes);
+    
+    return (
+        <>
+            <h1>Anecdote with most votes</h1>
+            <p>{anecdotes[voteIndex]}</p>
+            <HasVotes index={voteIndex} points={points} />
+        </>
+    )   
+}
+
 const App = (props) => {
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(initPoints);
@@ -25,9 +49,12 @@ const App = (props) => {
 
   return (
     <div>
+        <h1>Anecdote of the day</h1>
         <p>{props.anecdotes[selected]}</p>
+        <HasVotes index={selected} points={points} />
         <Button handleClick={handleVoteClick} text='vote' />
         <Button handleClick={handleNextClick} text='next anecdote' />
+        <VotedAnecdote points={points} />
     </div>
   )
 }
@@ -42,7 +69,6 @@ const anecdotes = [
 ]
 
 const initPoints = Array(anecdotes.length).fill(0);
-console.log(initPoints)
 
 ReactDOM.render(
   <App anecdotes={anecdotes} />,
