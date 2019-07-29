@@ -4,16 +4,37 @@ import PersonForm from './components/PersonForm';
 import Numbers from './components/Numbers';
 import personService from './services/persons';
 
+const InfoNotification = ({ message }) => {
+    if (message === null) {
+        return null;
+    }
+
+    return (
+        <div className='info'>
+            {message}
+        </div>
+    )
+}
+
+const ErrorNotification = ({ message }) => {
+    if (message === null) {
+        return null;
+    }
+
+    return (
+        <div className='error'>
+            {message}
+        </div>
+    )
+}
+
 const App = () => {
-  const [ persons, setPersons] = useState([]);
-    // { name: 'Arto Hellas', number: '040-1234567' },
-    // { name: 'Ada Lovelace', number: '39-44-5323523' },
-    // { name: 'Dan Abramov', number: '12-43-234345' },
-    // { name: 'Mary Poppendieck', number: '39-23-6423122' }
- 
+  const [ persons, setPersons] = useState([]); 
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ filter, setFilter ] = useState('');
+  const [ infoMessage, setInfoMessage ] = useState(null);
+  const [ errorMessage, setErrorMessage ] = useState(null);
 
   useEffect(() => {
       personService
@@ -45,6 +66,18 @@ const App = () => {
             setPersons(persons.concat(returnedPersons))
             setNewName('');
             setNewNumber('');
+            setInfoMessage(
+                `Added ${personObject.name}`
+              )
+              setTimeout(() => {
+                setInfoMessage(null)
+              }, 5000)
+        })
+        .catch(error => {
+            setErrorMessage(`Couldn't add ${personObject.name}`)
+            setTimeout(() => {
+                setInfoMessage(null)
+            }, 5000)
         });
       }
 
@@ -67,6 +100,20 @@ const App = () => {
                 setPersons(persons.map(p => p.id !== person.id ? p : returnData));
                 setNewName('');
                 setNewNumber('');
+                setInfoMessage(
+                    `Edited ${personObject.name}'s number`
+                  )
+                  setTimeout(() => {
+                    setInfoMessage(null)
+                  }, 5000)
+            })
+            .catch(error => {
+                const newPersons = persons.filter(p => p.id !== person.id); 
+                setPersons(newPersons);
+                setErrorMessage(`Couldn't edit ${personObject.name}'s number, because name didn't exist on the server`)
+                setTimeout(() => {
+                    setErrorMessage(null)
+                }, 5000)
             });
         }
     }
@@ -75,15 +122,30 @@ const App = () => {
   const removePerson = (id, name) => {
       const message = `Delete ${name} ?` 
       let result = window.confirm(message);
-      
+      const removedPerson = persons.filter(person => person.id === id);
+
       if (result) {
         personService.remove(id)
         .then(response => {
             if (response.status === 200) {
-              const newPersons = persons.filter(person => person.id !== id);
+              const newPersons = persons.filter(person => person.id !== id); 
               setPersons(newPersons);
+              setInfoMessage(
+                `Removed ${removedPerson[0].name}`
+              )
+              setTimeout(() => {
+                setInfoMessage(null)
+              }, 5000)
             }
         })
+        .catch(error => {
+            const newPersons = persons.filter(person => person.id !== id); 
+            setPersons(newPersons);
+            setErrorMessage(`${removedPerson[0].name} was already removed`)
+            setTimeout(() => {
+                setErrorMessage(null)
+            }, 5000)
+        });
       }
   }
 
@@ -104,6 +166,8 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <InfoNotification message={infoMessage} />
+      <ErrorNotification message={errorMessage} />
       <Filter filter={filter} handleFilterchange={handleFilterchange} />
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />  
       <Numbers persons={filteredPersons} removeFunction={removePerson}/>
