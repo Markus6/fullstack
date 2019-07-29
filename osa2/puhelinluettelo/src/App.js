@@ -30,22 +30,46 @@ const App = () => {
           number: newNumber
       }
       
-      let found = persons.find(function(element) {
-          return element.name === personObject.name;
+      const alreadyExists = persons.find(function(element) {
+          return element.name === personObject.name && element.number === personObject.number;
       });
 
-      if (found) {
-        window.alert(`${newName} is already added to phonebook`);
-        return;
-      }
+      const differentNumber = persons.find(function(element) {
+        return element.name === personObject.name && element.number !== personObject.number;
+      });
 
-      personService
+      if (!alreadyExists && !differentNumber) {
+        personService
         .create(personObject)
         .then(returnedPersons => {
             setPersons(persons.concat(returnedPersons))
             setNewName('');
             setNewNumber('');
         });
+      }
+
+      else if (alreadyExists) {
+        window.alert(`${newName} is already added to phonebook`);
+        return;
+      }
+
+      
+      else if (differentNumber) {
+        const message = `${newName} is already added to phonebook, replace the old number with a new one?` 
+        const askForUpdate = window.confirm(message);
+
+        if (askForUpdate) {
+            const person = persons.find(p => p.name === personObject.name);
+            const changedPerson = { ...person, number: personObject.number }
+            personService
+            .update(person.id, changedPerson)
+            .then(returnData => {
+                setPersons(persons.map(p => p.id !== person.id ? p : returnData));
+                setNewName('');
+                setNewNumber('');
+            });
+        }
+    }
   }
 
   const removePerson = (id, name) => {
@@ -55,8 +79,8 @@ const App = () => {
       if (result) {
         personService.remove(id)
         .then(response => {
-            if (response.status == 200) {
-              const newPersons = persons.filter(person => person.id != id);
+            if (response.status === 200) {
+              const newPersons = persons.filter(person => person.id !== id);
               setPersons(newPersons);
             }
         })
