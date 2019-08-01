@@ -74,6 +74,8 @@ const App = () => {
               }, 5000)
         })
         .catch(error => {
+            setNewName('');
+            setNewNumber('');
             setErrorMessage(`Couldn't add ${personObject.name}`)
             setTimeout(() => {
                 setInfoMessage(null)
@@ -83,6 +85,8 @@ const App = () => {
 
       else if (alreadyExists) {
         window.alert(`${newName} is already added to phonebook`);
+        setNewName('');
+        setNewNumber('');
         return;
       }
 
