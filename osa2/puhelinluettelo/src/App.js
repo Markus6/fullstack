@@ -127,7 +127,7 @@ const App = () => {
       if (result) {
         personService.remove(id)
         .then(response => {
-            if (response.status === 200) {
+            if (response.status === 204) {
               const newPersons = persons.filter(person => person.id !== id); 
               setPersons(newPersons);
               setInfoMessage(
