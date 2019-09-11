@@ -74,9 +74,14 @@ const App = () => {
               }, 5000)
         })
         .catch(error => {
+            console.log(error.response.data);
+            console.log(error.response.data.error);
             setNewName('');
             setNewNumber('');
-            setErrorMessage(`Couldn't add ${personObject.name}`)
+            if (error.response.data)
+                setErrorMessage(`${error.response.data.error}`);
+            else
+                setErrorMessage(`Couldn't add ${personObject.name}`);
             setTimeout(() => {
                 setInfoMessage(null)
             }, 5000)
